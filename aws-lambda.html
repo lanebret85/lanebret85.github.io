@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>AWS Lambda Skillbuilder Course Takeaways</h1>
+
+    <ul>
+        <li>3 types of invocations for lambda
+            <ul>
+                <li>synchronous
+                    <ul>
+                        <li>lambda runs the function and waits for the response</li>
+                        <li>no built-in retries on error, meaning retries must be handled in application code</li>
+                        <li>examples
+                            <ul>
+                                <li>Amazon API Gateway</li>
+                                <li>Amazon Alexa</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>asynchronous
+                    <ul>
+                        <li>events are queued</li>
+                        <li>no response expected, so helpful for when the client doesn't need an immediate response</li>
+                        <li>can configure destinations, meaning you can send records of your async invocations to other services
+                            <ul>
+                                <li>can differentiate destinations based on success or failure</li>
+                            </ul>
+                        </li>
+                        <li>examples
+                            <ul>
+                                <li>Amazon SNS</li>
+                                <li>Amazon S3</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>polling
+                    <ul>
+                        <li>clients in this model are streaming- and queueing-based</li>
+                        <li>lambda polls (watches) the services and invokes your functions when the events match</li>
+                        <li>AWS manages the polling for you, and retry behavior is dependent on event configuration</li>
+                        <li>examples of services Lambda will read from
+                            <ul>
+                                <li>Amazon DynamoDB</li>
+                                <li>Amazon SQS</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</body>
+</html>
