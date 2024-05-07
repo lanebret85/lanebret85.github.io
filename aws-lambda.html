@@ -54,6 +54,99 @@
                 </li>
             </ul>
         </li>
+        <li>
+            error behavior for each invocation model:
+            <table border="1">
+                <tr>
+                    <th>Invocation Model</th>
+                    <th>Error Behavior</th>
+                </tr>
+                <tr>
+                    <td>Synchronous</td>
+                    <td>No retries</td>
+                </tr>
+                <tr>
+                    <td>Asynchronous</td>
+                    <td>Built in - retries twice</td>
+                </tr>
+                <tr>
+                    <td>Polling</td>
+                    <td>Depends on event source</td>
+                </tr>
+            </table>
+        </li>
+        <li>execution environment lifecycle
+            <ul>
+                <li>Lambda invokes your function in a secure and isolated execution environment</li>
+                <li>you specify configuration info upon creation of your lambda
+                    <ul>
+                        <li>i.e. available memory, max invocation time</li>
+                    </ul>
+                </li>
+                <li>3 phases:
+                    <ul>
+                        <li>INIT phase
+                            <ul>
+                                <li>Extension Init - starts all extensions</li>
+                                <li>Runtime Init - bootstraps the runtime</li>
+                                <li>Function Init - runs the function's static code</li>
+                            </ul>
+                        </li>
+                        <li>INVOKE phase
+                            <ul>
+                                <li>Invoke - for the function handler</li>
+                                <li>Invoke - preparation to handle another function invocation</li>
+                            </ul>
+                        </li>
+                        <li>SHUTDOWN phase
+                            <ul>
+                                <li>like your computer going to sleep, happens when the lambda doesn't receive invocations for a while</li>
+                                <li>Runtime Shutdown</li>
+                                <li>Extension Shutdown</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>of note:
+                    <ul>
+                        <li>Lambda does not always reuse the same execution environment for subsequent invocations</li>
+                        <li>because of this, always test to optimize the functions and adjust settings to meet needs</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>cold vs warm starts
+            <ul>
+                <li>cold starts
+                    <ul>
+                        <li>happen when lambda needs to create a new execution environment from scratch</li>
+                        <li>aws optimizes the startup and initialization times for the environment being created</li>
+                        <li>aws doesn't optimize anything about the initialization for packages and dependencies needed for the function</li>
+                    </ul>
+                </li>
+                <li>warm starts
+                    <ul>
+                        <li>happen when lambda retains an environment and allows the function to run again in the same environment</li>
+                        <li>you can optimize the speed at which the packages and dependencies needed for the function are initialized</li>
+                        <li>you have no control over the environment startup and initialization times</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>permissions
+            <ul>
+                <li>lambda functions need 2 sets of permissions
+                    <ul>
+                        <li>an IAM Resource (Function) Policy - tells lambda which principals (users, roles, other AWS services, or other AWS accounts) have permission to invoke the function
+                            <ul>
+                                <li>note: resource policies have size limits, so if you need to give cross-account invocation access to many different accounts, you would need to use IAM roles instead if you hit the policy size limit</li>
+                            </ul>
+                        </li>
+                        <li>an IAM Execution Role - allows the function to act upon other services</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
     </ul>
 </body>
 </html>
