@@ -147,6 +147,150 @@
                 </li>
             </ul>
         </li>
+        <li>Authoring Lambda Functions
+            <ul>
+                <li>handler method (start here)
+                    <ul>
+                        <li>the method in your function code that processes events</li>
+                        <li>when it exits or returns a response, it becomes available to handle the next event (if needed)</li>
+                        <li>takes two objects as parameters
+                            <ul>
+                                <li>event object
+                                    <ul>
+                                        <li>required</li>
+                                        <li>differs in structure and contents depending on event source that created it
+                                            <ul>
+                                                <li>ie. API gateway object will have data related to request made by the client, s3 object will include details about the bucket and the new object (file)</li>
+                                            </ul>
+                                        </li>
+                                        <li>contents include all the data and metadata your lambda function needs to drive its logic</li>
+                                    </ul>
+                                </li>
+                                <li>context object
+                                    <ul>
+                                        <li>optional</li>
+                                        <li>allows your function code to interact with the Lambda execution environment</li>
+                                        <li>contents and structure vary based on language runtime your function is using
+                                            <ul>
+                                                <li>at a minimum, it contains:
+                                                    <ul>
+                                                        <li>AWS RequestID
+                                                            <ul>
+                                                                <li>used to track specific invocations</li>
+                                                            </ul>
+                                                        </li>
+                                                        <li>Runtime
+                                                            <ul>
+                                                                <li>the amount of time in milliseconds remaining before a function timeout</li>
+                                                            </ul>
+                                                        </li>
+                                                        <li>Logging
+                                                            <ul>
+                                                                <li>info will be sent about which Amazon CloudWatch Logs stream your log statements</li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>Design best practices
+                    <ul>
+                        <li>best to separate business logic from the handler method</li>
+                        <li>make functions modular (basically SRP)</li>
+                        <li>no information about state should be saved within the function itself (due to the serverless nature of the application)</li>
+                        <li>minimize deployment package dependencies
+                            <ul>
+                                <li>can have a significant impact on startup time</li>
+                                <li>do not include an entire AWS SDK</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>Best practices for writing code
+                    <ul>
+                        <li>include logging statements</li>
+                        <li>use return coding (make your functions return values in order to exit)</li>
+                        <li>provide environment variables
+                            <ul>
+                                <li>can use operational parameters to pass updated config settings without changes to the code itself</li>
+                                <li>can use them to store sensitive info required by the function since Lambda encrypts them with a key that it creates on your account as a default (Customer Master Key or CMK)</li>
+                            </ul>
+                        </li>
+                        <li>add secret and reference data
+                            <ul>
+                                <li>Parameter Store (part of AWS Systems Manger) integrates with Secrets Manager</li>
+                                <li>Parameter Store also integrates with IAM</li>
+                            </ul>
+                        </li>
+                        <li>avoid recursive code
+                            <ul>
+                                <li>could lead to uncontrolled scaling of invocations that would make you lose control of your concurrency</li>
+                                <li>if it happens by accident, quickly set the concurrent execution limit to zero using the console or cli to throttle requests in the interim</li>
+                            </ul>
+                        </li>
+                        <li>gather metrics with Amazon CloudWatch
+                            <ul>
+                                <li>the embedded metric format (EMF) is a JSON spec used to instruct CloudWatch Logs to automatically extract metric values embedded in structured log events</li>
+                            </ul>
+                        </li>
+                        <li>reuse execution content
+                            <ul>
+                                <li>take advantage of existing execution context when you get a warm start by:
+                                    <ol>
+                                        <li>storing dependencies locally</li>
+                                        <li>limiting re-initialization of variables</li>
+                                        <li>reuse existing connections</li>
+                                        <li>use tmp space as transient cache</li>
+                                        <li>check that background processes have completed</li>
+                                    </ol>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>3 ways to build and deploy lambda functions
+                    <ol>
+                        <li>Lambda console editor
+                            <ul>
+                                <li>best place to begin for newbies</li>
+                                <li>if your code doesn't require custom libraries, you can edit it inline through the console</li>
+                                <li>build your functions using an account that is suitable for testing. Once the Lambda service creates a deployment package after your function is saved, it is deployed to the AWS cloud</li>
+                            </ul>
+                        </li>
+                        <li>deployment packages
+                            <ul>
+                                <li>for more advanced lambda users</li>
+                                <li>2 types of deployment packages supported
+                                    <ul>
+                                        <li>container images</li>
+                                        <li>.zip file archives</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>automation tools
+                            <ul>
+                                <li>use AWS SAM (Serverless Application Model) and other services (AWS CodeBuild, AWS CodeDeploy, AWS CodePipeline) to automate deployment process</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </li>
+                <li>More on AWS SAM
+                    <ul>
+                        <li>open-source framework for building serverless applications</li>
+                        <li>provides shorthands syntax to express functions, APIs, databases, and event source mappings</li>
+                        <li>you can model the apps you want using YAML</li>
+                        <li>simplified AWS CloudFormation for creation and deployment of your apps, where instructions are less verbose and SAM transforms them into a CloudFormation template for you</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
     </ul>
 </body>
 </html>
